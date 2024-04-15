@@ -12,7 +12,7 @@ function Header({ authState }) {
   return (
     <div className="bg-gray-100 rounded-bl-xl rounded-br-xl p-3 font-bold drop-shadow-2xl text-gray-900 flex justify-between">
       <div className="logo text-shadow text-blue-800 my-auto text-md md:text-3xl lg:text-3xl">
-        Certificates Hub
+        Certificate Hub
       </div>
 
       <div className="auth flex justify-center align-middle items-center gap-2">
