@@ -78,7 +78,7 @@ function UploadAndView({ userEmail }) {
             alt=""
           />
           <div className="flex justify-center align-middle">
-          <a  className="bg-gray-200 mx-auto p-2 rounded-lg hover:bg-slate-300"  href="https://certificatehub-backend.onrender.com/api/files/${_id}" download={`https://certificatehub-backend.onrender.com/api/files/${_id}`} > download</a>
+          <a  className="bg-gray-200 mx-auto p-2 rounded-lg hover:bg-slate-300"  href={`https://certificatehub-backend.onrender.com/api/files/${_id}`} download={`https://certificatehub-backend.onrender.com/api/files/${_id}`} > download</a>
           </div>
         </div>
         
