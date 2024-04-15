@@ -71,9 +71,7 @@ function UploadAndView({ userEmail }) {
           <span className="close bg-white p-2 my-auto" onClick={closeModal}>
             &times;
           </span>
-          <h1 className="bg-gradient-to-r from-indigo-200 to-yellow-100 text-center p-5 text-4xl mb-5 rounded-mdm font-extrabold underline underline-offset-4 text-gray-900">
-            {filename}
-          </h1>
+          
           <img
             className="rounded-lg w-1/3 h-auto p-3 mx-auto"
             src={`https://certificatehub-backend.onrender.com/api/files/${_id}`}
