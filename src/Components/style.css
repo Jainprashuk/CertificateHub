@@ -41,8 +41,8 @@
   }
   
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 580px) {
     .close {
-      display: block;
+      display: none;
     }
   }
