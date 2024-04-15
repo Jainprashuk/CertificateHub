@@ -12,7 +12,7 @@ function UploadAndView({ userEmail }) {
   useEffect(() => {
     fetchFilesRef.current = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/files",{
+        const response = await axios.get("https://certificatehub-backend.onrender.com/api/files",{
           params:{
             userEmail,
           }
@@ -38,7 +38,7 @@ function UploadAndView({ userEmail }) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("userEmail", userEmail);
-      await axios.post("http://localhost:5000/api/upload", formData, {
+      await axios.post("https://certificatehub-backend.onrender.com/api/upload", formData, {
         headers: {
           "Content-Type": "image/jpeg",
         },
@@ -76,7 +76,7 @@ function UploadAndView({ userEmail }) {
           </h1>
           <img
             className="rounded-lg w-1/3 h-auto p-3 mx-auto"
-            src={`http://localhost:5000/api/files/${_id}`}
+            src={`https://certificatehub-backend.onrender.com/api/files/${_id}`}
             alt=""
           />
           <div className="flex justify-center align-middle">
@@ -100,7 +100,7 @@ function UploadAndView({ userEmail }) {
                   {file.contentType.startsWith("image") ? (
                     <img
                       className="h-auto max-w-full rounded-lg cursor-pointer"
-                      src={`http://localhost:5000/api/files/${file._id}`}
+                      src={`https://certificatehub-backend.onrender.com/api/files/${file._id}`}
                       alt=""
                       onClick={() => openModal(file)}
                     />
@@ -110,7 +110,7 @@ function UploadAndView({ userEmail }) {
                   {file.contentType.startsWith("application/pdf") ? (
                     <iframe
                       className="h-auto max-w-full rounded-lg cursor-pointer"
-                      src={`http://localhost:5000/api/files/${file._id}`}
+                      src={`https://certificatehub-backend.onrender.com/api/files/${file._id}`}
                       alt=""
                       onClick={() => openModal(file)}
                     />
