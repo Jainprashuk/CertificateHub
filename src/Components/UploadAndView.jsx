@@ -144,13 +144,7 @@ function UploadAndView({ userEmail }) {
                 Upload
               </button>
               <a href="https://certificate-hub-ocr-frontend.vercel.app/">
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center"
-                
-              >
-                Check Your Skills
-              </button>
+              
               </a>
             </div>
           </form>
@@ -178,6 +172,15 @@ function UploadAndView({ userEmail }) {
         >
           Upload
         </button>
+        <a href="https://certificate-hub-ocr-frontend.vercel.app/">
+        <button
+          className={`bg-gradient-to-r from-orange-600 to-orange-500 w-full sm:w-1/2 p-2 text-center rounded-bl-xl rounded-br-xl sm:rounded-tr-xl sm:rounded-br-xl  ""
+          }`}
+          
+        >
+          Check Skills
+        </button>
+        </a>
       </div>
       <div id="mycontent" className="border-2 rounded-lg m-5">
         {renderContent()}
