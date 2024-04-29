@@ -155,7 +155,7 @@ function UploadAndView({ userEmail }) {
 
   return (
     <>
-      <div className="bg-white flex flex-col sm:flex-row gap-1 w-11/12 md:w-1/2 mx-auto p-2 mt-5 rounded-3xl">
+      <div className="bg-white flex flex-col sm:flex-row gap-1  md:w-1/2 mx-auto p-2 mt-5 rounded-3xl">
         <button
           className={`bg-gradient-to-r from-amber-200 to-yellow-500 w-full sm:w-1/2 p-2 text-center rounded-tl-xl rounded-tr-xl sm:rounded-tl-xl sm:rounded-bl-xl ${
             contentType === "view" ? "bg-gradient-to-r from-amber-400 to-yellow-600" : ""
@@ -172,15 +172,15 @@ function UploadAndView({ userEmail }) {
         >
           Upload
         </button>
-        <a href="https://certificate-hub-ocr-frontend.vercel.app/">
         <button
-          className={`bg-gradient-to-r from-orange-600 to-orange-500 w-full sm:w-1/2 p-2 text-center rounded-bl-xl rounded-br-xl sm:rounded-tr-xl sm:rounded-br-xl  ""
+          className={`bg-gradient-to-r from-orange-600 to-orange-500 w-full sm:w-1/2 p-2 text-center rounded-bl-xl rounded-br-xl sm:rounded-tr-xl sm:rounded-br-xl ${
+            contentType === "upload" ? "bg-gradient-to-r from-orange-700 to-orange-600" : ""
           }`}
           
         >
-          Check Skills
+          <a href="https://certificate-hub-ocr-frontend.vercel.app/">Check Skills</a>
         </button>
-        </a>
+        
       </div>
       <div id="mycontent" className="border-2 rounded-lg m-5">
         {renderContent()}
