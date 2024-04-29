@@ -66,6 +66,7 @@ function UploadAndView({ userEmail }) {
     const { _id, filename } = selectedFile;
 
     return (
+      
       <div className="modal" onClick={closeModal}>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <span className="close bg-white p-2 my-auto" onClick={closeModal}>
@@ -142,6 +143,15 @@ function UploadAndView({ userEmail }) {
               >
                 Upload
               </button>
+              <a href="https://certificate-hub-ocr-frontend.vercel.app/">
+              <button
+                type="button"
+                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center"
+                
+              >
+                Check Your Skills
+              </button>
+              </a>
             </div>
           </form>
         </div>
