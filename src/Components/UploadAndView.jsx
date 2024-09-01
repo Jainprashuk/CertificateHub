@@ -1,34 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./style.css";
 
 function UploadAndView({ userEmail }) {
   const [files, setFiles] = useState([]);
-  const [contentType, setContentType] = useState("view"); // Initialize with 'view'
-  const [selectedFile, setSelectedFile] = useState(null); // Track selected file for modal
+  const [contentType, setContentType] = useState("view");
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const fetchFilesRef = useRef();
+  const fetchFiles = async () => {
+    try {
+      const response = await axios.get("https://certificatehub-backend.onrender.com/api/files", {
+        params: {
+          userEmail,
+        },
+      });
+      setFiles(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Error fetching files:", error);
+    }
+  };
 
   useEffect(() => {
-    fetchFilesRef.current = async () => {
-      try {
-        const response = await axios.get("https://certificatehub-backend.onrender.com/api/files",{
-          params:{
-            userEmail,
-          }
-        });
-        if (Array.isArray(response.data)) {
-          setFiles(response.data);
-        } else {
-          setFiles([]);
-        }
-      } catch (error) {
-        console.error("Error fetching files:", error);
-      }
-    };
-
-    fetchFilesRef.current(); // Fetch files on component mount
-  }, []);
+    fetchFiles();
+  }, [userEmail]);
 
   const handleFileUpload = async (event) => {
     try {
@@ -40,49 +34,59 @@ function UploadAndView({ userEmail }) {
       formData.append("userEmail", userEmail);
       await axios.post("https://certificatehub-backend.onrender.com/api/upload", formData, {
         headers: {
-          "Content-Type": "image/jpeg",
+          "Content-Type": file.type,
         },
       });
 
-      fetchFilesRef.current(); // Refetch files after successful upload
-      
-      setContentType("view"); // Switch back to view after upload
+      fetchFiles();
+      setContentType("view");
     } catch (error) {
       console.error("Error uploading file:", error);
     }
   };
 
   const openModal = (file) => {
-    setSelectedFile(file); // Set the selected file to open its modal
+    setSelectedFile(file);
   };
 
   const closeModal = () => {
-    setSelectedFile(null); // Clear selected file to close its modal
+    setSelectedFile(null);
   };
 
   const renderModal = () => {
     if (!selectedFile) return null;
 
-    const { _id, filename } = selectedFile;
+    const { _id } = selectedFile;
 
     return (
-      
-      <div className="modal" onClick={closeModal}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          <span className="close bg-white p-2 my-auto" onClick={closeModal}>
+      <div
+        className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 transition-opacity duration-300"
+        onClick={closeModal}
+      >
+        <div
+          className=" p-6 rounded-lg shadow-2xl max-w-lg mx-auto transform scale-105 transition-transform duration-300"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span
+            className="text-gray-500 hover:text-gray-700 cursor-pointer text-2xl absolute top-3 right-3"
+            onClick={closeModal}
+          >
             &times;
           </span>
-          
           <img
-            className="rounded-lg w-1/3 h-auto p-3 mx-auto"
+            className="rounded-lg w-full h-auto p-3"
             src={`https://certificatehub-backend.onrender.com/api/files/${_id}`}
             alt=""
           />
-          <div className="flex justify-center align-middle">
-          <a  className="bg-gray-200 mx-auto p-2 rounded-lg hover:bg-slate-300"  href={`https://certificatehub-backend.onrender.com/api/files/${_id}`}  > download</a>
+          <div className="flex justify-center mt-4">
+            <a
+              className="text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 px-4 py-2 rounded-lg transition-all duration-300 shadow-lg transform hover:scale-110"
+              href={`https://certificatehub-backend.onrender.com/api/files/${_id}`}
+            >
+              Download
+            </a>
           </div>
         </div>
-        
       </div>
     );
   };
@@ -91,35 +95,34 @@ function UploadAndView({ userEmail }) {
     if (contentType === "view") {
       return (
         <div className="p-6">
-          <p className="text-center text-3xl font-bold mb-6 text-shadow">Your Certificates</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <p className="text-center text-4xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+            Your Certificates
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {files.length > 0 ? (
               files.map((file, index) => (
-                <div key={index} className="mb-4">
-                  {file.contentType.startsWith("image") ? (
+                <div key={index} className="relative group">
+                  {file.contentType.startsWith("image") && (
                     <img
-                      className="h-auto max-w-full rounded-lg cursor-pointer"
+                      className="h-auto max-w-full rounded-lg shadow-xl cursor-pointer transform group-hover:scale-105 transition-transform duration-300"
                       src={`https://certificatehub-backend.onrender.com/api/files/${file._id}`}
                       alt=""
                       onClick={() => openModal(file)}
+                      loading="lazy"
                     />
-                  ) : (
-                    <p>{" "}</p>
                   )}
-                  {file.contentType.startsWith("application/pdf") ? (
+                  {file.contentType.startsWith("application/pdf") && (
                     <iframe
-                      className="h-auto max-w-full rounded-lg cursor-pointer"
+                      className="h-auto max-w-full rounded-lg shadow-xl cursor-pointer transform group-hover:scale-105 transition-transform duration-300"
                       src={`https://certificatehub-backend.onrender.com/api/files/${file._id}`}
                       alt=""
                       onClick={() => openModal(file)}
                     />
-                  ) : (
-                    <p>{" "}</p>
                   )}
                 </div>
               ))
             ) : (
-              <p>No files uploaded yet.</p>
+              <p className="text-gray-600">No files uploaded yet.</p>
             )}
           </div>
         </div>
@@ -127,26 +130,23 @@ function UploadAndView({ userEmail }) {
     } else {
       return (
         <div className="p-6">
-          <h2 className="text-center">Upload Your Certificates here</h2>
-          <form className="m-5">
-            <div className="flex gap-5">
-              <input
-                className="block w-full text-sm p-2 text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                id="file_input"
-                type="file"
-                onChange={handleFileUpload}
-              />
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center"
-                onClick={() => setContentType("view")}
-              >
-                Upload
-              </button>
-              <a href="https://certificate-hub-ocr-frontend.vercel.app/">
-              
-              </a>
-            </div>
+          <h2 className="text-center text-3xl font-semibold text-gray-700 mb-6">
+            Upload Your Certificates
+          </h2>
+          <form className="flex flex-col items-center">
+            <input
+              className="block w-full text-sm text-gray-900 border-2 border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 mb-4 p-3"
+              id="file_input"
+              type="file"
+              onChange={handleFileUpload}
+            />
+            <button
+              type="button"
+              className="text-white bg-gray-600 hover:from-green-600 hover:via-yellow-600 hover:to-orange-600 font-medium rounded-lg text-lg px-6 py-3 text-center shadow-xl transform transition-transform duration-300 hover:scale-110"
+              onClick={() => setContentType("view")}
+            >
+              Upload
+            </button>
           </form>
         </div>
       );
@@ -155,34 +155,47 @@ function UploadAndView({ userEmail }) {
 
   return (
     <>
-      <div className="bg-white flex flex-col sm:flex-row gap-1  md:w-1/2 mx-auto p-2 mt-5 rounded-3xl">
-        <button
-          className={`bg-gradient-to-r from-amber-200 to-yellow-500 w-full sm:w-1/2 p-2 text-center rounded-tl-xl rounded-tr-xl sm:rounded-tl-xl sm:rounded-bl-xl ${
-            contentType === "view" ? "bg-gradient-to-r from-amber-400 to-yellow-600" : ""
-          }`}
-          onClick={() => setContentType("view")}
-        >
-          View
-        </button>
-        <button
-          className={`bg-gradient-to-r from-orange-600 to-orange-500 w-full sm:w-1/2 p-2 text-center rounded-bl-xl rounded-br-xl sm:rounded-tr-xl sm:rounded-br-xl ${
-            contentType === "upload" ? "bg-gradient-to-r from-orange-700 to-orange-600" : ""
-          }`}
-          onClick={() => setContentType("upload")}
-        >
-          Upload
-        </button>
-        <button
-          className={`bg-gradient-to-r from-orange-600 to-orange-500 w-full sm:w-1/2 p-2 text-center rounded-bl-xl rounded-br-xl sm:rounded-tr-xl sm:rounded-br-xl ${
-            contentType === "upload" ? "bg-gradient-to-r from-orange-700 to-orange-600" : ""
-          }`}
-          
-        >
-          <a href="https://certificate-hub-ocr-frontend.vercel.app/">Check Skills</a>
-        </button>
-        
-      </div>
-      <div id="mycontent" className="border-2 rounded-lg m-5">
+      <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-2xl shadow-2xl p-8 mt-10 mx-auto max-w-5xl">
+        <div className="flex justify-center mb-6">
+          <div className="flex w-full sm:w-1/2 bg-gray-200 rounded-lg shadow-lg overflow-hidden">
+            <button
+              className={`flex-1 py-3 text-center font-semibold text-lg transition-all duration-300 ${
+                contentType === "view"
+                  ? "bg-white text-gray-900 shadow-inner"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+              onClick={() => setContentType("view")}
+            >
+              View
+            </button>
+            <button
+              className={`flex-1 py-3 text-center font-semibold text-lg transition-all duration-300 ${
+                contentType === "upload"
+                  ? "bg-white text-gray-900 shadow-inner"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+              onClick={() => setContentType("upload")}
+            >
+              Upload
+            </button>
+            <button
+              className={`flex-1 py-3 text-center font-semibold text-lg transition-all duration-300 ${
+                contentType === "check"
+                  ? "bg-white text-gray-900 shadow-inner"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+              onClick={() => setContentType("check")}
+            >
+              <a
+                href="https://certificate-hub-ocr-frontend.vercel.app/"
+                className="block"
+              >
+                Check Skills
+              </a>
+            </button>
+          </div>
+        </div>
+
         {renderContent()}
       </div>
       {renderModal()}
